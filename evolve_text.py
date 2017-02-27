@@ -95,6 +95,30 @@ class Message(list):
 # TODO: Implement levenshtein_distance function (see Day 9 in-class exercises)
 # HINT: Now would be a great time to implement memoization if you haven't
 
+def levenshtein_distance(string_1, len_1, string_2, len_2):
+    """
+    Given two strings, return the levenshtein_distance between the two
+    >>> levenshtein_distance('hello', 5, 'hello', 5)
+    0
+    >>> levenshtein_distance('catch', 5, 'match', 5)
+    1
+    >>> levenshtein_distance('catch-22', 8, 'match', 5)
+    4
+    """
+    # base case: empty strings
+    if len_1 == 0:
+        return len_2
+    if len_2 == 0:
+        return len_1
+    # first character is the same
+    if string_1[0] == string_2[0]:
+        dist = 0
+    else:
+        dist = 1
+
+    # Replace the first character of string_1 with the first char of string_2
+
+
 def evaluate_text(message, goal_text, verbose=VERBOSE):
     """
     Given a Message and a goal_text string, return the Levenshtein distance
