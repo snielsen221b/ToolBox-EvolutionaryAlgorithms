@@ -13,12 +13,10 @@ https://sites.google.com/site/sd15spring/home/project-toolbox/evolutionary-algor
 
 import random
 import string
+import doctest
 
 import numpy    # Used for statistics
-from deap import algorithms
-from deap import base
-from deap import tools
-
+from deap import algorithms, base, tools
 
 # -----------------------------------------------------------------------------
 #  Global variables
@@ -96,27 +94,35 @@ class Message(list):
 # HINT: Now would be a great time to implement memoization if you haven't
 
 def levenshtein_distance(string_1, len_1, string_2, len_2):
-    """
-    Given two strings, return the levenshtein_distance between the two
+    '''finds the Levenshtein distance between string 1
+    and string 2
     >>> levenshtein_distance('hello', 5, 'hello', 5)
     0
     >>> levenshtein_distance('catch', 5, 'match', 5)
     1
     >>> levenshtein_distance('catch-22', 8, 'match', 5)
     4
-    """
-    # base case: empty strings
+    '''
+
+    # base-case: empty strings
     if len_1 == 0:
         return len_2
     if len_2 == 0:
         return len_1
-    # first character is the same
-    if string_1[0] == string_2[0]:
+
+    # text if last chrarters of strings match
+    if string_1[len_1 - 1] == string_2[len_2 - 1]:
         dist = 0
     else:
         dist = 1
 
-    # Replace the first character of string_1 with the first char of string_2
+    # recurse: return minimum of LD removing char from string_1,
+    # removing character from string_2, and deleting char from both
+    reduce_1 = levenshtein_distance(string_1, len_1 - 1, string_2, len_2) + 1
+    reduce_2 = levenshtein_distance(string_1, len_1, string_2, len_2 - 1) + 1
+    reduce_both = levenshtein_distance(string_1, len_1 - 1, string_2, len_2 - 1) + dist
+    minimum = min(reduce_1, reduce_2, reduce_both)
+    return minimum
 
 
 def evaluate_text(message, goal_text, verbose=VERBOSE):
@@ -219,6 +225,7 @@ def evolve_string(text):
 # Run if called from the command line
 # -----------------------------------------------------------------------------
 if __name__ == "__main__":
+    doctest.testmod()
 
     # Get goal message from command line (optional)
     import sys
