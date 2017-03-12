@@ -147,7 +147,17 @@ def edit_distance(string_1, string_2):
     for j in range(1, len_2):
         d[0, j] = j
 
-    print(d)
+    # iterates through matrix to find levenshtein_distance
+    for j in range(1, len_2):
+        for i in range(1, len_1):
+            # if string_1[i] and string_2[j] are the same, no operation
+            # is required
+            if string_1[i] != string_2[j]:
+                deletion = d[i-1, j] + 1
+                insertion = d[i, j-1] + 1
+                substitution = d[i-1, j-1]
+                d[i, j] = min(deletion, insertion, substitution)
+    return d[len_1, len_1]
 
 
 def evaluate_text(message, goal_text, verbose=VERBOSE):
