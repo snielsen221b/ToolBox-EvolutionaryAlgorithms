@@ -16,6 +16,7 @@ import string
 import doctest
 
 import numpy    # Used for statistics
+from numpy import zeros
 from deap import algorithms, base, tools
 
 # -----------------------------------------------------------------------------
@@ -122,6 +123,31 @@ def levenshtein_distance(string_1, len_1, string_2, len_2):
     reduce_both = levenshtein_distance(string_1, len_1 - 1, string_2, len_2 - 1) + dist
     minimum = min(reduce_1, reduce_2, reduce_both)
     return minimum
+
+
+def edit_distance(string_1, string_2):
+    '''finds the Levnshtein distance using the Warner-Fisher algorithm
+    >>> edit_distance('hello', 'hello')
+    0
+    >>> edit_distance('catch', 'match')
+    1
+    >>> edit_distance('catch-22', 'match')
+    4
+    '''
+    len_1 = len(string_1)
+    len_2 = len(string_2)
+    # distance matrix as matrix of zeros len(string_1) by len(string_2)
+    d = zeros((len_1, len_2))
+
+    # makes first row of d distance from string_1[i] to empty string
+    for i in range(1, len_1):
+        d[i, 0] = i
+
+    # makes first column of d distance from string_2[i] to empty string
+    for j in range(1, len_2):
+        d[0, j] = j
+
+    print(d)
 
 
 def evaluate_text(message, goal_text, verbose=VERBOSE):
