@@ -89,9 +89,8 @@ class Message(list):
 # -----------------------------------------------------------------------------
 # Genetic operators
 # -----------------------------------------------------------------------------
+memo = {}
 
-# TODO: Implement levenshtein_distance function (see Day 9 in-class exercises)
-# HINT: Now would be a great time to implement memoization if you haven't
 
 def levenshtein_distance(string_1, len_1, string_2, len_2):
     '''finds the Levenshtein distance between string 1
@@ -131,7 +130,8 @@ def evaluate_text(message, goal_text, verbose=VERBOSE):
     between the Message and the goal_text as a length 1 tuple.
     If verbose is True, print each Message as it is evaluated.
     """
-    distance = levenshtein_distance(message.get_text(), goal_text)
+    distance = levenshtein_distance(message.get_text(), len(message.get_text()),
+                                    goal_text, len(goal_text))
     if verbose:
         print("{msg!s}\t[Distance: {dst!s}]".format(msg=message, dst=distance))
     return (distance, )     # Length 1 tuple, required by DEAP
@@ -149,15 +149,20 @@ def mutate_text(message, prob_ins=0.05, prob_del=0.05, prob_sub=0.05):
         Substitution:   Replace one character of the Message with a random
                         (legal) character
     """
-
+    # Insertion-type mutation
     if random.random() < prob_ins:
-        # TODO: Implement insertion-type mutation
-        pass
-
-    # TODO: Also implement deletion and substitution mutations
-    # HINT: Message objects inherit from list, so they also inherit
-    #       useful list methods
-    # HINT: You probably want to use the VALID_CHARS global variable
+        i = random.randint(0, len(message))
+        char = random.choice(string.letters)
+        message.insert(i, char)
+    # Deletion-type mutation
+    if random.random() < prob_del:
+        i = random.randint(0, len(message))
+        message.pop(i)
+    # Substitution-type mutation
+    if random.random() < prob_sub:
+        i = random.randint(0, len(message))
+        char = random.choice(string.letters)
+        message[i] = char
 
     return (message, )   # Length 1 tuple, required by DEAP
 
