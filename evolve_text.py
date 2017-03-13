@@ -229,18 +229,25 @@ def get_toolbox(text):
 
     # Creating population to be evolved
     # Individuals
-    # toolbox.register("individual", Message)
+    toolbox.register("individual", Message)
+
     # Particle
-    creator.create("FitnessMax", base.Fitness, weights=(1.0, 1.0))
-    creator.create("Particle", list, fitness=creator.FitnessMax, speed=None)
-    toolbox.register("particle", initParticle, creator.Particle, size=2,
-                     pmin=-6, pmax=6, smin=-3, smax=3)
-    # random population
-    # toolbox.register("population", tools.initRepeat, list, toolbox.individual)
+    # creator.create("FitnessMax", base.Fitness, weights=(1.0, 1.0))
+    # creator.create("Particle", Message, fitness=creator.FitnessMax, speed=None)
+    # toolbox.register("particle", initParticle, creator.Particle, size=2,
+    #                  pmin=-6, pmax=6, smin=-3, smax=3)
+
+    # Create population
+    # Bag
+    toolbox.register("population", tools.initRepeat, list, toolbox.individual)
+
+    # Grid --unfinished
+    # toolbox.register("row", tools.initRepeat, list, toolbox, indi)
+
     # Swarm
-    creator.create("Swarm", list, gbest=None, gbestfit=creator.FitnessMax)
-    toolbox.register("swarm", tools.initRepeat, creator.Swarm,
-                     toolbox.particle)
+    # creator.create("Swarm", list, gbest=None, gbestfit=creator.FitnessMax)
+    # toolbox.register("swarm", tools.initRepeat, creator.Swarm,
+    #                  toolbox.particle)
 
     # Genetic operators
     toolbox.register("evaluate", evaluate_text, goal_text=text)
@@ -267,7 +274,7 @@ def evolve_string(text):
     toolbox = get_toolbox(text)
 
     # pop = toolbox.population(n=300)
-    pop = toolbox.swarm(n=300)
+    pop = toolbox.population(n=300)
 
     # Collect statistics as the EA runs
     stats = tools.Statistics(lambda ind: ind.fitness.values)

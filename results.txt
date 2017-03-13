@@ -7,4 +7,43 @@
 2000 generations, randomized population
 2000	192   	0.0333333 	0.179505 	0  	1
 
-4000 generations, randomize population
+4000 generations, randomized population
+4000	177   	0.03      	0.170587 	0  	1
+
+There is the most improvement in between 1000 and 2000 generations, after that,
+change is much slower
+
+500 generations, uniform population: "HELLO"
+500	185   	1.03   	0.170587 	1  	2
+
+1000 generations, uniform population, "HELLO"
+1000	189   	0.0433333	0.203606 	0  	1
+
+2000 generations, uniform population, "HELLO"
+2000	157   	0.03      	0.170587 	0  	1
+
+4000 generations, uniform population, "HELLO"
+4000	174   	0.0266667 	0.161107 	0  	1
+
+500 generations, uniform population, "SKYNET"
+500	175   	2.02667	0.161107 	2  	3
+
+500 generations, uniform population, "THIS IS A GREAT STRING"
+500	201   	1.01667	0.128019 	1  	2
+
+500 generations, uniform population, ascii_uppercase
+500	189   	2.99   	0.299833 	2  	4
+
+Starting with a uniform population can get closer to the target within 500
+generations if you start with an appropriate string. Randomizing the population
+allows a similar average time to target but a uniform population will make the
+algorithm faster if the string is close enough to the target.
+
+And using both ->
+Randomized population:
+Message('YNET IS NOW ONLINN')	[Distance: 2]
+500	180   	2.06   	0.288213 	2  	4
+
+Uniform population, starting string 'YNET IS NOW ONLINN':
+Message('SKYNET IS NOW ONLINN')	[Distance: 0]
+500	188   	0.03      	0.170587 	0  	1
