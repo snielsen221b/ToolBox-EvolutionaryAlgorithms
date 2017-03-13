@@ -133,6 +133,8 @@ def edit_distance(string_1, string_2):
     1
     >>> edit_distance('catch-22', 'match')
     4
+    >>> edit_distance('kitten', 'sitting')
+    3
     '''
     len_1 = len(string_1)
     len_2 = len(string_2)
@@ -152,12 +154,14 @@ def edit_distance(string_1, string_2):
         for i in range(1, len_1):
             # if string_1[i] and string_2[j] are the same, no operation
             # is required
-            if string_1[i] != string_2[j]:
+            if string_1[i-1] == string_2[j-1]:
+                d[i, j] = d[i-1, j-1]
+            else:
                 deletion = d[i-1, j] + 1
                 insertion = d[i, j-1] + 1
-                substitution = d[i-1, j-1]
+                substitution = d[i-1, j-1] + 1
                 d[i, j] = min(deletion, insertion, substitution)
-    return d[len_1, len_1]
+    return int(d[len_1-1, len_2-1])
 
 
 def evaluate_text(message, goal_text, verbose=VERBOSE):
@@ -166,8 +170,9 @@ def evaluate_text(message, goal_text, verbose=VERBOSE):
     between the Message and the goal_text as a length 1 tuple.
     If verbose is True, print each Message as it is evaluated.
     """
-    distance = levenshtein_distance(message.get_text(), len(message.get_text()),
-                                    goal_text, len(goal_text))
+    # distance = levenshtein_distance(message.get_text(), len(message.get_text()),
+    #                                 goal_text, len(goal_text))
+    distance = edit_distance(message.get_text(), goal_text)
     if verbose:
         print("{msg!s}\t[Distance: {dst!s}]".format(msg=message, dst=distance))
     return (distance, )     # Length 1 tuple, required by DEAP
@@ -187,17 +192,17 @@ def mutate_text(message, prob_ins=0.05, prob_del=0.05, prob_sub=0.05):
     """
     # Insertion-type mutation
     if random.random() < prob_ins:
-        i = random.randint(0, len(message))
-        char = random.choice(string.letters)
+        i = random.randint(0, len(message)-1)
+        char = random.choice(string.ascii_uppercase + " ")
         message.insert(i, char)
     # Deletion-type mutation
     if random.random() < prob_del:
-        i = random.randint(0, len(message))
+        i = random.randint(0, len(message)-1)
         message.pop(i)
     # Substitution-type mutation
     if random.random() < prob_sub:
-        i = random.randint(0, len(message))
-        char = random.choice(string.letters)
+        i = random.randint(0, len(message)-1)
+        char = random.choice(string.ascii_uppercase + " ")
         message[i] = char
 
     return (message, )   # Length 1 tuple, required by DEAP
