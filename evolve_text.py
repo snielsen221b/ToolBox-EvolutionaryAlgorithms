@@ -17,7 +17,7 @@ import doctest
 
 import numpy    # Used for statistics
 from numpy import zeros
-from deap import algorithms, base, tools
+from deap import algorithms, base, tools, creator
 
 # -----------------------------------------------------------------------------
 #  Global variables
@@ -208,9 +208,17 @@ def mutate_text(message, prob_ins=0.05, prob_del=0.05, prob_sub=0.05):
     return (message, )   # Length 1 tuple, required by DEAP
 
 
+def initParticle(pcls, size, pmin, pmax, smin, smax):
+    part = pcls(random.uniform(pmin, pmax) for _ in range(size))
+    part.speed = [random.uniform(smin, smax) for _ in range(size)]
+    part.smin = smin
+    part.smax = smax
+    return part
+
 # -----------------------------------------------------------------------------
 # DEAP Toolbox and Algorithm setup
 # -----------------------------------------------------------------------------
+
 
 def get_toolbox(text):
     """Return DEAP Toolbox configured to evolve given 'text' string"""
@@ -220,8 +228,19 @@ def get_toolbox(text):
     toolbox = base.Toolbox()
 
     # Creating population to be evolved
-    toolbox.register("individual", Message)
-    toolbox.register("population", tools.initRepeat, list, toolbox.individual)
+    # Individuals
+    # toolbox.register("individual", Message)
+    # Particle
+    creator.create("FitnessMax", base.Fitness, weights=(1.0, 1.0))
+    creator.create("Particle", list, fitness=creator.FitnessMax, speed=None)
+    toolbox.register("particle", initParticle, creator.Particle, size=2,
+                     pmin=-6, pmax=6, smin=-3, smax=3)
+    # random population
+    # toolbox.register("population", tools.initRepeat, list, toolbox.individual)
+    # Swarm
+    creator.create("Swarm", list, gbest=None, gbestfit=creator.FitnessMax)
+    toolbox.register("swarm", tools.initRepeat, creator.Swarm,
+                     toolbox.particle)
 
     # Genetic operators
     toolbox.register("evaluate", evaluate_text, goal_text=text)
@@ -246,7 +265,9 @@ def evolve_string(text):
 
     # Get configured toolbox and create a population of random Messages
     toolbox = get_toolbox(text)
-    pop = toolbox.population(n=300)
+
+    # pop = toolbox.population(n=300)
+    pop = toolbox.swarm(n=300)
 
     # Collect statistics as the EA runs
     stats = tools.Statistics(lambda ind: ind.fitness.values)

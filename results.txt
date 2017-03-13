@@ -1,0 +1,10 @@
+500 generations, randomized population:
+500	180   	2.06   	0.288213 	2  	4
+
+1000 generations, randomized population:
+1000	178   	2.04   	0.22745  	2  	4
+
+2000 generations, randomized population
+2000	192   	0.0333333 	0.179505 	0  	1
+
+4000 generations, randomize population
